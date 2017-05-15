@@ -10,7 +10,19 @@ int read_handler(void *ext, unsigned char *buffer, unsigned long size, unsigned 
   return 1;
 }
 
-int parse_file(char* file, void (*m)(char*, unsigned char*)) {
+int parse_file(char* file, 
+               void (*no_event)(),
+               void (*stream_start_event)(),
+               void (*stream_end_event)(),
+               void (*document_start_event)(),
+               void (*document_end_event)(),
+               void (*sequence_start_event)(),
+               void (*sequence_end_event)(),
+               void (*mapping_start_event)(),
+               void (*mapping_end_event)(),
+               void (*alias_event)(unsigned char*),
+               void (*scalar_event)(unsigned char*)
+) {
   yaml_parser_t parser;
   yaml_event_t event;
   int status = 1;
@@ -28,37 +40,37 @@ int parse_file(char* file, void (*m)(char*, unsigned char*)) {
     }
     switch(event.type){
       case YAML_NO_EVENT:
-        m("YAML_NO_EVENT", "");
+        no_event();
         break;
       case YAML_STREAM_START_EVENT:
-        m("YAML_STREAM_START_EVENT", "");
+        stream_start_event();
         break;
       case YAML_STREAM_END_EVENT:
-        m("YAML_STREAM_END_EVENT", "");
+        stream_end_event();
         break;
       case YAML_DOCUMENT_START_EVENT:
-        m("YAML_DOCUMENT_START_EVENT", "");
+        document_start_event();
         break;
       case YAML_DOCUMENT_END_EVENT:
-        m("YAML_DOCUMENT_END_EVENT", "");
+        document_end_event();
         break;
       case YAML_SEQUENCE_START_EVENT:
-        m("YAML_SEQUENCE_START_EVENT", "");
+        sequence_start_event();
         break;
       case YAML_SEQUENCE_END_EVENT:
-        m("YAML_SEQUENCE_END_EVENT", "");
+        sequence_end_event();
         break;
       case YAML_MAPPING_START_EVENT:
-        m("YAML_MAPPING_START_EVENT", "");
+        mapping_start_event();
         break;
       case YAML_MAPPING_END_EVENT:
-        m("YAML_MAPPING_END_EVENT", "");
+        mapping_end_event();
         break;
       case YAML_ALIAS_EVENT:
-        m("YAML_ALIAS_EVENT", event.data.alias.anchor);
+        alias_event(event.data.alias.anchor);
         break;
       case YAML_SCALAR_EVENT:
-        m("YAML_SCALAR_EVENT", event.data.scalar.value);
+        scalar_event(event.data.scalar.value);
         break;
     };
   } while(event.type != YAML_STREAM_END_EVENT);
