@@ -2,7 +2,7 @@
 
 use Test;
 use JSON::Fast;
-use YAML::Parser;
+use YAML::Parser::LibYAML;
 
 my @dirs = './t/data'.IO.dir.grep({
   [$_.dir.grep({

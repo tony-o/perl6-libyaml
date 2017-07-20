@@ -12,8 +12,8 @@
   "build-depends" : [ "LibraryMake" ],
   "test-depends"  : [ "JSON::Fast" ],
   "provides"      : {
-      "YAML::Parser" : "lib/YAML/Parser.pm"
-   },
+      "YAML::Parser" : "lib/YAML/Parser.pm6"
+  },
   "resources" : [
     "lib/libyaml_wrap.so",
     "lib/libyaml_wrap.dll",

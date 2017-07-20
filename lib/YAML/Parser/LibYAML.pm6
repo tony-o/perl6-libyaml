@@ -1,4 +1,4 @@
-unit module YAML::Loader;
+unit module YAML::Parser::LibYAML;
 
 use NativeCall;
 use LibraryMake;
