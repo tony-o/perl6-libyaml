@@ -1,0 +1,22 @@
+{
+  "authors"       : [ "Tony O'Dell" ],
+  "perl"          : "6.c",
+  "license"       : "Artistic-2.0",
+  "name"          : "YAML::Parser",
+  "tags"          : ["yaml", "parser", "native" ], 
+  "version"       : "0.0.1",
+  "auth"          : "github:tony-o",
+  "description"   : "libyaml wrapper + Parser",
+  "source-url"    : "git://github.com/tony-o/perl6-libyaml.git",
+  "depends"       : [ ],
+  "build-depends" : [ "LibraryMake" ],
+  "test-depends"  : [ ],
+  "provides"      : {
+      "YAML::Parser" : "lib/YAML/Parser.pm"
+   },
+  "resources" : [
+    "lib/libyaml_wrap.so",
+    "lib/libyaml_wrap.dll",
+    "lib/libyaml_wrap.dylib"
+  ]
+}

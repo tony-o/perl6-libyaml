@@ -1,8 +1,14 @@
-use NativeCall;
-
 unit module YAML::Loader;
 
-use Data::Dump;
+use NativeCall;
+use LibraryMake;
+
+sub libyaml_wrap is export(:libyaml_wrap) {
+  state $ = do {
+		my $so = get-vars('')<SO>;
+		~(%?RESOURCES{"lib/libyaml_wrap$so"});
+	}
+}
 
 sub parse_file(Str $file, 
                &no_event (), 
@@ -18,7 +24,7 @@ sub parse_file(Str $file,
                &scalar_event (Str), 
                &nil_scalar_event (),
 ) 
-  is native('./clib/libyaml_wrap.so.1.0.0'.IO.absolute)
+  is native(&libyaml_wrap)
   { * };
 
 
