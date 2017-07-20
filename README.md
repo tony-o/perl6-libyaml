@@ -13,4 +13,4 @@ $yaml.perl.say;
 
 Profit.
 
-tony-o
+tony-o | thanks to ingy and tina for fuelling this creation with scotch and vegan pizza
