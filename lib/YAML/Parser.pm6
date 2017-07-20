@@ -2,6 +2,8 @@ use NativeCall;
 
 unit module YAML::Loader;
 
+use Data::Dump;
+
 sub parse_file(Str $file, 
                &no_event (), 
                &stream_start_event (), 
@@ -14,13 +16,16 @@ sub parse_file(Str $file,
                &mapping_end_event (), 
                &alias_event (Str), 
                &scalar_event (Str), 
+               &nil_scalar_event (),
 ) 
-  is native('../clib/libyaml_wrap.so.1.0.0')
+  is native('./clib/libyaml_wrap.so.1.0.0'.IO.absolute)
   { * };
 
 
 sub log() {
   "log(): status({$*STATUS.elems}), keys({@*KEYS.elems}), stack({@*STACK.elems})".say if $*DEBUG;
+  say Dump @*STACK 
+    if $*DEBUG;
 }
 
 sub no-event() {
@@ -72,17 +77,26 @@ sub mapping-start-event() {
 
 sub push-pop() {
   if $*STATUS > 0 { 
+    warn "push pop\n" if $*DEBUG;
+    log();
     my $x = @*STACK.pop;
-    if @*STACK.elems > 1 && @*STACK[*-1] ~~ Hash {
-      @*STACK[*-2].append(@*KEYS.pop<value> => $x);
-    } elsif @*STACK.elems > 1 {
-      @*STACK[*-1].push($x);
-    } elsif $*STATUS == 1 && @*STACK.elems {
-      @*STACK[*-1].push($x);
+    if @*STACK.elems >= 1 {
+      if @*STACK[*-1] ~~ Hash {
+        @*STACK[*-1].append(
+          @*KEYS.pop<value> => $x,
+        );
+      } elsif @*STACK[*-1] ~~ Array {
+        @*STACK[*-1].push($x);
+      } else {
+        die 'Now we here';
+      }
     } else {
+      warn 'else' if $*DEBUG;
       @*STACK.push($x);
     }
   }
+  log();
+    warn '/push pop' if $*DEBUG;
   $*STATUS--;
 
 };
@@ -100,12 +114,30 @@ sub alias-event(Str $alias) {
   '/alias-event'.say if $*DEBUG;
 }
 
-sub scalar-event(Str $scalar) {
+sub nil-scalar-event {
+  scalar-event(Any);
+}
+
+sub scalar-event($scalar) {
   'scalar-event'.say if $*DEBUG;
-  @*KEYS.push({ depth => $*STATUS, value => $scalar });
-  if $*STATUS > 0 && @*KEYS.elems > 1 && @*KEYS[*-2]<depth> == $*STATUS {
+  my $value = 
+    Any ~~ $scalar 
+      ?? Any 
+      !! $scalar ~~ m{^\d+\.?\d*$} 
+         ?? $scalar.Numeric 
+         !! $scalar eq 'false' 
+            ?? False 
+            !! $scalar eq 'true' 
+               ?? True 
+               !! $scalar;
+
+  @*KEYS.push({ depth => $*STATUS, value => $value });
+  warn "status({$*STATUS}) keys({@*KEYS.map({ $_<depth> ~ ':' ~ $_<value>.perl}).join(', ')})\n" if $*DEBUG;
+  if @*STACK.elems && @*STACK[*-1] ~~ Hash && $*STATUS > 0 && @*KEYS.elems > 1 && @*KEYS[*-2]<depth> == $*STATUS {
     my ($k, $v) = (@*KEYS.pop<value>, @*KEYS.pop<value>);
     @*STACK[*-1].append($v, $k);
+  } elsif @*STACK.elems && @*STACK[*-1] ~~ Array && $*STATUS > 0 && @*KEYS.elems > 0 && @*KEYS[*-1]<depth> == $*STATUS {
+    @*STACK[*-1].push(@*KEYS.pop<value>);
   }
   log();
   '/scalar-event'.say if $*DEBUG;
@@ -117,7 +149,7 @@ sub yaml-parse(Str $yaml, Bool $DEBUG = False) is export {
   my @*STACK = [];
   my @*KEYS;
   my $*DEBUG = $DEBUG;
-  parse_file("test2.yaml", 
+  parse_file("{$yaml.IO.absolute}", 
              &no-event, 
              &stream-start-event, 
              &stream-end-event,
@@ -129,6 +161,8 @@ sub yaml-parse(Str $yaml, Bool $DEBUG = False) is export {
              &mapping-end-event,
              &alias-event,
              &scalar-event, 
+             &nil-scalar-event,
             );
+  return @*KEYS[0]<value> if @*STACK.elems == 0;
   @*STACK[0];
 }

@@ -21,7 +21,8 @@ int parse_file(char* file,
                void (*mapping_start_event)(),
                void (*mapping_end_event)(),
                void (*alias_event)(unsigned char*),
-               void (*scalar_event)(unsigned char*)
+               void (*scalar_event)(unsigned char*),
+               void (*nil_scalar_event)()
 ) {
   yaml_parser_t parser;
   yaml_event_t event;
@@ -70,7 +71,11 @@ int parse_file(char* file,
         alias_event(event.data.alias.anchor);
         break;
       case YAML_SCALAR_EVENT:
-        scalar_event(event.data.scalar.value);
+        if(event.data.scalar.length == 0 && event.data.scalar.plain_implicit){
+          nil_scalar_event();
+        }else{
+          scalar_event(event.data.scalar.value);
+        }
         break;
     };
   } while(event.type != YAML_STREAM_END_EVENT);
