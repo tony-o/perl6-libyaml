@@ -10,7 +10,7 @@
   "source-url"    : "git://github.com/tony-o/perl6-libyaml.git",
   "depends"       : [ ],
   "build-depends" : [ "LibraryMake" ],
-  "test-depends"  : [ ],
+  "test-depends"  : [ "JSON::Fast" ],
   "provides"      : {
       "YAML::Parser" : "lib/YAML/Parser.pm"
    },

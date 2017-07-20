@@ -30,8 +30,6 @@ sub parse_file(Str $file,
 
 sub log() {
   "log(): status({$*STATUS.elems}), keys({@*KEYS.elems}), stack({@*STACK.elems})".say if $*DEBUG;
-  say Dump @*STACK 
-    if $*DEBUG;
 }
 
 sub no-event() {
@@ -83,7 +81,6 @@ sub mapping-start-event() {
 
 sub push-pop() {
   if $*STATUS > 0 { 
-    warn "push pop\n" if $*DEBUG;
     log();
     my $x = @*STACK.pop;
     if @*STACK.elems >= 1 {
@@ -97,17 +94,14 @@ sub push-pop() {
         die 'Now we here';
       }
     } else {
-      warn 'else' if $*DEBUG;
       @*STACK.push($x);
     }
   }
   log();
-    warn '/push pop' if $*DEBUG;
   $*STATUS--;
 
 };
 
-use Data::Dump;
 sub mapping-end-event() {
   'mapping-end-event'.say if $*DEBUG;
   push-pop;
@@ -138,7 +132,6 @@ sub scalar-event($scalar) {
                !! $scalar;
 
   @*KEYS.push({ depth => $*STATUS, value => $value });
-  warn "status({$*STATUS}) keys({@*KEYS.map({ $_<depth> ~ ':' ~ $_<value>.perl}).join(', ')})\n" if $*DEBUG;
   if @*STACK.elems && @*STACK[*-1] ~~ Hash && $*STATUS > 0 && @*KEYS.elems > 1 && @*KEYS[*-2]<depth> == $*STATUS {
     my ($k, $v) = (@*KEYS.pop<value>, @*KEYS.pop<value>);
     @*STACK[*-1].append($v, $k);
