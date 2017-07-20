@@ -4,11 +4,10 @@ all : lib
 
 lib : resources/lib/libyaml_wrap%SO%
 
-resources/lib/libyaml_wrap%SO% : $(SRC)/libyaml_wrap%O%
-	%LD% %LDSHARED% %LDFLAGS% %LDOUT%resources/lib/libyaml_wrap%SO% $(SRC)/libyaml_wrap%O%
-
 $(SRC)/libyaml_wrap%O% : $(SRC)/libyaml_wrap.c
 	%CC% -I $(SRC) -c %CCSHARED% %CCFLAGS% %CCOUT%$(SRC)/libyaml_wrap%O% $(SRC)/libyaml_wrap.c
+resources/lib/libyaml_wrap%SO% : $(SRC)/libyaml_wrap%O%
+	%LD% -lyaml %LDSHARED% %LDFLAGS% %LDOUT%resources/lib/libyaml_wrap%SO% $(SRC)/libyaml_wrap%O%
 
 test : all
 	@prove -e"perl6 -I lib" -v t

@@ -3,4 +3,5 @@ resources/*
 *.o
 *.so
 *.so.*
+Makefile
 .precomp
