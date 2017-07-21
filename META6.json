@@ -1,10 +1,9 @@
 {
   "authors"       : [ "Tony O'Dell" ],
-  "perl"          : "6.c",
-  "license"       : "Artistic-2.0",
+  "perl"          : "6.*",
   "name"          : "YAML::Parser::LibYAML",
   "tags"          : ["yaml", "parser", "native" ], 
-  "version"       : "0.0.1",
+  "version"       : "0.0.2",
   "auth"          : "github:tony-o",
   "description"   : "libyaml wrapper + Parser",
   "source-url"    : "git://github.com/tony-o/perl6-libyaml.git",
