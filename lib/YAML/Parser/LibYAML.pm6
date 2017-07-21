@@ -3,10 +3,10 @@ unit module YAML::Parser::LibYAML;
 use NativeCall;
 use LibraryMake;
 
-sub libyaml_wrap is export(:libyaml_wrap) {
+sub libyamlwrap is export(:libyamlwrap) {
   state $ = do {
 		my $so = get-vars('')<SO>;
-		~(%?RESOURCES{"lib/libyaml_wrap$so"});
+		~(%?RESOURCES{"lib/libyamlwrap$so"});
 	}
 }
 
@@ -24,7 +24,7 @@ sub parse_file(Str $file,
                &scalar_event (Str), 
                &nil_scalar_event (),
 ) 
-  is native(&libyaml_wrap)
+  is native(&libyamlwrap)
   { * };
 
 

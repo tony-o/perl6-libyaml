@@ -1,19 +1,20 @@
 SRC=src
-
+LD=-lyaml
 all : lib
 
-lib : resources/lib/libyaml_wrap%SO%
+lib : resources/lib/libyamlwrap%SO%
 
-$(SRC)/libyaml_wrap%O% : $(SRC)/libyaml_wrap.c
-	%CC% -I $(SRC) -c %CCSHARED% %CCFLAGS% %CCOUT%$(SRC)/libyaml_wrap%O% $(SRC)/libyaml_wrap.c
-resources/lib/libyaml_wrap%SO% : $(SRC)/libyaml_wrap%O%
-	%LD% -lyaml %LDSHARED% %LDFLAGS% %LDOUT%resources/lib/libyaml_wrap%SO% $(SRC)/libyaml_wrap%O%
+resources/lib/libyamlwrap%SO% : $(SRC)/yamlwrap%O%
+	%LD% $(LD) %LDSHARED% %LDFLAGS% %LDOUT%resources/lib/libyamlwrap%SO% $(SRC)/yamlwrap%O%
+
+$(SRC)/yamlwrap%O% : $(SRC)/yamlwrap.c
+	%CC% -I $(SRC) -c %CCSHARED% %CCFLAGS% %CCOUT%$(SRC)/yamlwrap%O% $(SRC)/yamlwrap.c
 
 test : all
 	@prove -e"perl6 -I lib" -v t
 
 clean :
-	@rm -f $(SRC)/*.o resources/lib/libyaml_wrap%SO%
+	@rm -f $(SRC)/*.o resources/lib/libyamlwrap%SO%
 
 realclean : clean
 	@rm -f Makefile

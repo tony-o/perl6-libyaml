@@ -17,13 +17,13 @@ class Build {
         shell(%vars<MAKE>);
 
         my @fake-lib-exts = <.so .dll .dylib>.grep(* ne %vars<SO>);
-        "$destfolder/lib$libname$_".IO.open(:w) for @fake-lib-exts;
+        "$destfolder/$libname$_".IO.open(:w) for @fake-lib-exts;
     }
 
     method build($workdir) {
         my $destdir = 'resources/lib';
         mkdir $destdir;
-        make($workdir, "$destdir", :libname<libyaml_wrap>);
+        make($workdir, "$destdir", :libname<libyamlwrap>);
     }
 }
 
