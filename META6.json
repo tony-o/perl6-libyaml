@@ -2,7 +2,7 @@
   "authors"       : [ "Tony O'Dell" ],
   "perl"          : "6.c",
   "license"       : "Artistic-2.0",
-  "name"          : "YAML::Parser",
+  "name"          : "YAML::Parser::LibYAML",
   "tags"          : ["yaml", "parser", "native" ], 
   "version"       : "0.0.1",
   "auth"          : "github:tony-o",
@@ -12,7 +12,7 @@
   "build-depends" : [ "LibraryMake" ],
   "test-depends"  : [ "JSON::Fast" ],
   "provides"      : {
-      "YAML::Parser" : "lib/YAML/Parser.pm6"
+      "YAML::Parser::LibYAML" : "lib/YAML/Parser/LibYAML.pm6"
   },
   "resources" : [
     "lib/libyaml_wrap.so",
