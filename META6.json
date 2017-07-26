@@ -3,7 +3,7 @@
   "perl"          : "6.*",
   "name"          : "YAML::Parser::LibYAML",
   "tags"          : [ "yaml", "parser", "native" ], 
-  "version"       : "0.0.3",
+  "version"       : "0.0.4",
   "auth"          : "github:tony-o",
   "description"   : "libyaml wrapper + Parser",
   "source-url"    : "git://github.com/tony-o/perl6-libyaml.git",

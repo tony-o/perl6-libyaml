@@ -27,11 +27,13 @@ int parse_file(char* file,
   yaml_parser_t parser;
   yaml_event_t event;
   int status = 1;
+  FILE* input;
+  void* ext;
 
   yaml_parser_initialize(&parser);
-  FILE* input = fopen(file, "rb");
+  input = fopen(file, "rb");
 
-  void* ext = "hello";
+  ext = "hello";
   yaml_parser_set_input_file(&parser, input);
 
   //yaml_parser_set_input(&parser, read_handler, ext);
