@@ -5,7 +5,7 @@ all : lib
 lib : resources/lib/libyamlwrap%SO%
 
 resources/lib/libyamlwrap%SO% : $(SRC)/yamlwrap%O%
-	%LD% $(LD) %LDSHARED% %LDFLAGS% %LDOUT%resources/lib/libyamlwrap%SO% $(SRC)/yamlwrap%O%
+	%LD% %LDSHARED% %LDFLAGS% %LDOUT%resources/lib/libyamlwrap%SO% $(SRC)/yamlwrap%O% $(LD)
 
 $(SRC)/yamlwrap%O% : $(SRC)/yamlwrap.c
 	%CC% -I $(SRC) -c %CCSHARED% %CCFLAGS% %CCOUT%$(SRC)/yamlwrap%O% $(SRC)/yamlwrap.c

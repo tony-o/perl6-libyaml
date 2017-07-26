@@ -6,7 +6,7 @@ use LibraryMake;
 sub libyamlwrap is export(:libyamlwrap) {
   state $ = do {
 		my $so = get-vars('')<SO>;
-		~(%?RESOURCES{"lib/libyamlwrap$so"});
+		~(%?RESOURCES{"lib/libyamlwrap$so"}).absolute;
 	}
 }
 
