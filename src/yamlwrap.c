@@ -21,7 +21,7 @@ int parse_file(char* file,
                void (*mapping_start_event)(),
                void (*mapping_end_event)(),
                void (*alias_event)(unsigned char*),
-               void (*scalar_event)(unsigned char*),
+               void (*scalar_event)(unsigned char*, char*),
                void (*nil_scalar_event)()
 ) {
   yaml_parser_t parser;
@@ -76,7 +76,7 @@ int parse_file(char* file,
         if(event.data.scalar.length == 0 && event.data.scalar.plain_implicit){
           nil_scalar_event();
         }else{
-          scalar_event(event.data.scalar.value);
+          scalar_event(event.data.scalar.value, event.data.scalar.style == YAML_DOUBLE_QUOTED_SCALAR_STYLE || event.data.scalar.style == YAML_SINGLE_QUOTED_SCALAR_STYLE ? "string" : "auto");
         }
         break;
     };

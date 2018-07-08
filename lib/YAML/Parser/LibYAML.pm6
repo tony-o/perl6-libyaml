@@ -10,20 +10,20 @@ sub libyamlwrap is export(:libyamlwrap) {
 	}
 }
 
-sub parse_file(Str $file, 
-               &no_event (), 
-               &stream_start_event (), 
-               &stream_end_event (), 
+sub parse_file(Str $file,
+               &no_event (),
+               &stream_start_event (),
+               &stream_end_event (),
                &document_start_event (),
-               &document_end_event (), 
-               &sequence_start_event (), 
-               &sequence_end_event (), 
+               &document_end_event (),
+               &sequence_start_event (),
+               &sequence_end_event (),
                &mapping_start_event (),
-               &mapping_end_event (), 
-               &alias_event (Str), 
-               &scalar_event (Str), 
+               &mapping_end_event (),
+               &alias_event (Str),
+               &scalar_event (Str, Str),
                &nil_scalar_event (),
-) 
+)
   is native(&libyamlwrap)
   { * };
 
@@ -80,7 +80,7 @@ sub mapping-start-event() {
 }
 
 sub push-pop() {
-  if $*STATUS > 0 { 
+  if $*STATUS > 0 {
     log();
     my $x = @*STACK.pop;
     if @*STACK.elems >= 1 {
@@ -115,21 +115,23 @@ sub alias-event(Str $alias) {
 }
 
 sub nil-scalar-event {
-  scalar-event(Any);
+  scalar-event(Any, '');
 }
 
-sub scalar-event($scalar) {
+sub scalar-event($scalar, $type) {
   'scalar-event'.say if $*DEBUG;
-  my $value = 
-    Any ~~ $scalar 
-      ?? Any 
-      !! $scalar ~~ m{^\d+\.?\d*$} 
-         ?? $scalar.Numeric 
-         !! $scalar eq 'false' 
-            ?? False 
-            !! $scalar eq 'true' 
-               ?? True 
-               !! $scalar;
+  my $value =
+    $type eq 'string'
+      ?? $scalar.Str
+      !! Any ~~ $scalar
+           ?? Any
+           !! $scalar ~~ m{^\d+\.?\d*$}
+              ?? $scalar.Numeric
+              !! $scalar eq 'false'
+                 ?? False
+                 !! $scalar eq 'true'
+                    ?? True
+                    !! $scalar;
 
   @*KEYS.push({ depth => $*STATUS, value => $value });
   if @*STACK.elems && @*STACK[*-1] ~~ Hash && $*STATUS > 0 && @*KEYS.elems > 1 && @*KEYS[*-2]<depth> == $*STATUS {
@@ -148,9 +150,9 @@ sub yaml-parse(Str $yaml, Bool $DEBUG = False) is export {
   my @*STACK = [];
   my @*KEYS;
   my $*DEBUG = $DEBUG;
-  parse_file("{$yaml.IO.absolute}", 
-             &no-event, 
-             &stream-start-event, 
+  parse_file("{$yaml.IO.absolute}",
+             &no-event,
+             &stream-start-event,
              &stream-end-event,
              &document-start-event,
              &document-end-event,
@@ -159,7 +161,7 @@ sub yaml-parse(Str $yaml, Bool $DEBUG = False) is export {
              &mapping-start-event,
              &mapping-end-event,
              &alias-event,
-             &scalar-event, 
+             &scalar-event,
              &nil-scalar-event,
             );
   return @*KEYS[0]<value> if @*STACK.elems == 0;
