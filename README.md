@@ -14,3 +14,11 @@ $yaml.perl.say;
 Profit.
 
 tony-o | thanks to ingy and tina for fuelling this creation with scotch and vegan pizza
+
+if you must build this yourself, you can do
+
+> zef build .
+
+or
+
+> src/build.sh
