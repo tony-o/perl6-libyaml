@@ -3,7 +3,7 @@
 cd src 
 
 gcc -c -fPIC yamlwrap.c -o yamlwrap.o
-gcc -shared -W1,-soname,yamlwrap.so.1 -lyaml -o yamlwrap.so.1.0.0 yamlwrap.o
+gcc -shared -Wl,-soname,yamlwrap.so.1 -lyaml -o yamlwrap.so.1.0.0 yamlwrap.o
 
 cd ..
 
