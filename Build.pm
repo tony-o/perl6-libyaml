@@ -30,4 +30,5 @@ class Build {
 # Build.pm can also be run standalone
 sub MAIN(Str $working-directory = '.' ) {
     Build.new.build($working-directory);
+    exit 0;
 }
